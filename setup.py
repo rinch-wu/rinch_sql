@@ -17,7 +17,7 @@ DESCRIPTION = "a simple orm based on [mysql,dataclass]."
 URL = "https://github.com/rinch-wu/rinch_sql"
 EMAIL = "rinch.wu@gmail.com"
 AUTHOR = "rinch wu"
-REQUIRES_PYTHON = ">=3.7.0"
+REQUIRES_PYTHON = ">=3.9.0" # typing, dataclasses
 VERSION = ""
 
 # What packages are required for this module to be executed?
