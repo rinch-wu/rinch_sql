@@ -12,14 +12,10 @@ class Sql:
         self.table_name: str = self._get_table_name(cls)
         self.annotations: dict[str, type] = cls.__annotations__.copy()
         self.field_list_all: list[str] = self._get_field_list_all(cls)
-        self.field_list_common: list[str] = self._get_field_list_common(
-            cls, SqlStatic.FIELD_LIST_PRE
-        )
+        self.field_list_common: list[str] = self._get_field_list_common(cls, SqlStatic.FIELD_LIST_PRE)
         self.field_list_unique: list[str] = cls.field_list_unique
 
-        assert (
-            SqlStatic.FIELD_LIST_PRE[0] in self.field_list_all
-        ), f"{SqlStatic.FIELD_LIST_PRE[0]} must in definition"
+        assert SqlStatic.FIELD_LIST_PRE[0] in self.field_list_all, f"{SqlStatic.FIELD_LIST_PRE[0]} must in definition"
 
         assert not (
             field_list_else := set(self.field_list_unique) - set(self.field_list_common)
@@ -45,15 +41,13 @@ class Sql:
         return [i for i in cls.__annotations__.copy() if i not in field_list_pre]
 
     def exist(self) -> str:
-        return f"SHOW TABLES LIKE '{self.table_name}'"
+        return SqlStatic.exist(self.table_name)
 
     def desc(self) -> str:
-        return f"DESC `{self.table_name}`"
+        return SqlStatic.desc(self.table_name)
 
-    def alert_modify(self, field_name: str, field_type: str) -> str:
-        return (
-            f"ALTER TABLE {self.table_name} MODIFY COLUMN `{field_name}` {field_type})"
-        )
+    def alert_modify(self, field_name: str, field_type: type, generated_expression: str = None) -> str:
+        return SqlStatic.alert_modify(self.table_name, field_name, field_type, generated_expression)
 
     def create(self) -> str:
         assert isinstance(self.cls, type)
