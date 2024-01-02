@@ -55,18 +55,12 @@ class Mysql(Generic[T]):
         obj_list = [self._values_2_obj(fields, i) for i in data_list]
         return obj_list
 
-    def select_is_not_error(self, _where_other: str = "") -> list[T]:
-        _where_is_not_error = "`error_id` IS NOT NULL"
-        return self.select(_where_is_not_error + _where_other)
-
     def insert(self, obj_list: list[T]) -> None:
         sql, fields = self.sql.insert()
         values_list = [self._obj_2_values(obj, fields) for obj in obj_list]
         self.executemany(sql, values_list)
 
-    def insert_with_duplicate(
-        self, obj_list: list[T], field_list: list[str] = None
-    ) -> None:
+    def insert_with_duplicate(self, obj_list: list[T], field_list: list[str] = None) -> None:
         field_list = field_list or self.sql.field_list_common
 
         sql, fields = self.sql.insert_with_duplicate(field_list)
@@ -80,11 +74,6 @@ class Mysql(Generic[T]):
 
     def update_one_key_with_value(self, obj: T, key: str) -> None:
         self.update_many(obj, [key])
-
-    def update_err_with_msg_id(self, obj: T, error_id: str) -> None:
-        obj.error = 1
-        obj.error_id = error_id
-        self.update_many(obj, ["error", "error_id"])
 
     # def check_field_str(self, data_dict: dict[str]) -> None:
     #     if not hasattr(self, "table_desc"):
