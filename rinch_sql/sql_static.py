@@ -29,19 +29,21 @@ class SqlStatic:
 
     @staticmethod
     def exist(table_name: str) -> str:
-        sql = f"SHOW TABLES LIKE '{table_name}'"
+        sql = f"SHOW TABLES LIKE '{table_name}';"
         sql_debug(sql)
         return sql
 
     @staticmethod
     def desc(table_name: str) -> str:
-        sql = f"DESC `{table_name}`"
+        sql = f"DESC `{table_name}`;"
         sql_debug(sql)
         return sql
 
     @staticmethod
-    def alert_modify(table_name: str, field_name: str, field_type: str) -> str:
-        sql = f"ALTER TABLE {table_name} MODIFY COLUMN `{field_name}` {field_type})"
+    def alert_modify(table_name: str, field_name: str, field_type: type, generated_expression: str = None) -> str:
+        field_type = SqlStatic.get_sql_type(field_name, field_type)
+        as_expression = f"AS ({generated_expression}) STORED" if generated_expression else ""
+        sql = f"ALTER TABLE {table_name} MODIFY COLUMN `{field_name}` {field_type} {as_expression};"
         sql_debug(sql)
         return sql
 
@@ -73,7 +75,7 @@ class SqlStatic:
     @staticmethod
     def update(table_name: str, field_list: list[str]) -> tuple[str, list[str]]:
         update_set_str = SqlStatic._update_set_str(field_list)
-        sql = f"UPDATE `{table_name}` SET {update_set_str} WHERE id=%s"
+        sql = f"UPDATE `{table_name}` SET {update_set_str} WHERE id=%s;"
         sql_debug(sql)
         return sql, field_list
 
@@ -82,22 +84,18 @@ class SqlStatic:
         return ",".join(map(lambda i: f"`{i}`=%s", field_list_common))
 
     @staticmethod
-    def select(
-        table_name: str, field_list_all: list[str], _where
-    ) -> tuple[str, list[str]]:
+    def select(table_name: str, field_list_all: list[str], _where) -> tuple[str, list[str]]:
         field_list_all_str = SqlStatic.get_field_list_str(field_list_all)
-        sql = f'SELECT {field_list_all_str} FROM `{table_name}` {"WHERE " + _where if  _where!="" else ""} '
+        sql = f'SELECT {field_list_all_str} FROM `{table_name}` {"WHERE " + _where if  _where!="" else ""};'
         sql_debug(sql)
         return sql, field_list_all
 
     @staticmethod
-    def insert_with_duplicate(
-        table_name: str, field_list_common: list[str]
-    ) -> tuple[str, list[str]]:
+    def insert_with_duplicate(table_name: str, field_list_common: list[str]) -> tuple[str, list[str]]:
         sql_insert, field_list_common = SqlStatic.insert(table_name, field_list_common)
         sql_duplicate = SqlStatic._duplicate(field_list_common)
         sql = sql_insert + " " + sql_duplicate
-
+        sql += ";"
         sql_debug(sql)
         return sql, field_list_common
 
@@ -106,14 +104,13 @@ class SqlStatic:
         field_list_common_str = SqlStatic.get_field_list_str(field_list_common)
         values_str = ",".join(["%s"] * len(field_list_common))
         sql = f"INSERT INTO `{table_name}`({field_list_common_str}) VALUES({values_str})  as new_data"
+        sql += ";"
         sql_debug(sql)
         return sql, field_list_common
 
     @staticmethod
     def _duplicate(field_list_common: list[str]) -> str:
-        field_list_common_str = ",".join(
-            map(lambda i: f"`{i}`=new_data.`{i}`", field_list_common)
-        )
+        field_list_common_str = ",".join(map(lambda i: f"`{i}`=new_data.`{i}`", field_list_common))
         sql_duplicate = f"ON DUPLICATE KEY UPDATE {field_list_common_str}"
         return sql_duplicate
 
@@ -136,7 +133,7 @@ class SqlStatic:
         return field_list_common_create_str
 
     @staticmethod
-    def get_sql_type(field_name: str, field_type: str) -> str:
+    def get_sql_type(field_name: str, field_type: type) -> str:
         if field_name.endswith("msg"):
             return "TEXT"
         elif field_name.endswith("url"):
