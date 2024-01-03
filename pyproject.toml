@@ -40,4 +40,4 @@ Repository = "https://github.com/rinch-wu/rinch_sql"
 line-length = 120
 
 [tool.setuptools.dynamic]
-version = { attr = "rinch_sql.__version__" }
+version = { attr = "rinch_sql.__version__.__version__" }
