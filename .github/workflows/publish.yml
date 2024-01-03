@@ -5,8 +5,10 @@ name: Upload Python Package
 
 on:
   push:
-    tags:
-    - 'v*'
+    paths:
+    - 'rinch_sql/__version__.py'
+    # tags:
+    # - 'v*'
 
 jobs:
   pypi-publish:
@@ -15,6 +17,13 @@ jobs:
       id-token: write
     steps:
     - uses: actions/checkout@v4
+    - name: Create and push tag
+      run: |
+        # git config --local user.email "rinch.wu@gmail.com"
+        # git config --local user.name "rinch wu"
+        vversion=$(python rinch_sql/__version__.py)
+        git tag $vversion
+        git push origin --tags
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
