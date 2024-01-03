@@ -1,6 +1,6 @@
 # Introduction
 
-a simple orm based on [mysql,dataclass].
+a simple orm in python based on [mysql,dataclass].
 
 
 
