@@ -1,14 +1,15 @@
 [build-system]
 # requires = ["hatchling"]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+# build-backend = "hatchling.build"
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "rinch_sql"
 description = "a simple orm in python based on [mysql,dataclass]."
 readme = "README.md"
 requires-python = ">=3.9.0"
-license = "MIT"
+license = { text = "MIT" }
 authors = [{ name = "rinch wu", email = "rinch.wu@gmail.com" }]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -39,3 +40,6 @@ Repository = "https://github.com/rinch-wu/rinch_sql"
 
 [tool.black]
 line-length = 120
+
+[tool.setuptools.dynamic]
+version = { attr = "rinch_sql.__version__" }
