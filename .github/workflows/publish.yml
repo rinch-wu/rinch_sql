@@ -18,6 +18,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Create and push tag
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         # git config --local user.email "rinch.wu@gmail.com"
         # git config --local user.name "rinch wu"
