@@ -39,5 +39,7 @@ Repository = "https://github.com/rinch-wu/rinch_sql"
 [tool.black]
 line-length = 120
 
+[tool.setuptools]
+py-modules = []
 [tool.setuptools.dynamic]
 version = { attr = "rinch_sql.__version__.__version__" }
