@@ -89,3 +89,8 @@ ENV/
 .ropeproject
 *.npy
 *.pkl
+
+
+/test.*
+log/*
+!log/.gitkeep
