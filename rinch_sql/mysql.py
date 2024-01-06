@@ -32,7 +32,7 @@ class Mysql(Generic[T]):
 
         self.cls = cls
         self.sql = Sql(cls)
-        self.pool: MySQLConnectionPool = MySQLConnectionPool(**mysql_config_pool)
+        self.pool: MySQLConnectionPool = mysql.connector.connect(**mysql_config_pool)
 
     def conn(self) -> MySQLConnection:
         total: int = 0
