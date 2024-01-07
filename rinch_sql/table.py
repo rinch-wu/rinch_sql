@@ -8,5 +8,5 @@ class Table:
     @classmethod
     def db(cls, db_config: dict[str] = None):
         db_config = db_config or cls.db_config
-        db = Mysql(db_config, cls)
+        db = Mysql(cls, db_config)
         return db
