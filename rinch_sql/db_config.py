@@ -19,4 +19,4 @@ class DbConfig:
         return MySQLConnectionPool(**self.__dict__)
 
     def replace(self, /, **changes):
-        return replace(self, changes)
+        return replace(self, **changes)
