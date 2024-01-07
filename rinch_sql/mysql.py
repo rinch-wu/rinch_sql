@@ -17,6 +17,12 @@ class Mysql(Generic[T]):
     pool: MySQLConnectionPool
 
     def __init__(self, cls: Type[T], mysql_config_pool: dict[str]):
+        self.cls = cls
+        self.sql = Sql(cls)
+        self.pool: MySQLConnectionPool = self.pool(mysql_config_pool)
+
+    @staticmethod
+    def pool(mysql_config_pool):
         mysql_config_pool = {**mysql_config_pool, "autocommit": True}
 
         mysql_config_pool_key_min = {
@@ -29,10 +35,8 @@ class Mysql(Generic[T]):
             "autocommit",
         }
         assert mysql_config_pool.keys() >= mysql_config_pool_key_min, mysql_config_pool
-
-        self.cls = cls
-        self.sql = Sql(cls)
-        self.pool: MySQLConnectionPool = mysql.connector.connect(**mysql_config_pool)
+        pool: MySQLConnectionPool = mysql.connector.connect(**mysql_config_pool)
+        return pool
 
     def conn(self) -> MySQLConnection:
         total: int = 0
