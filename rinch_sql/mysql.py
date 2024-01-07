@@ -1,6 +1,7 @@
 from typing import Type, TypeVar, Generic
 
 import time
+from functools import cache
 
 import mysql.connector
 from mysql.connector.pooling import MySQLConnectionPool
@@ -22,7 +23,8 @@ class Mysql(Generic[T]):
         self.pool: MySQLConnectionPool = self.pool_(mysql_config_pool)
 
     @staticmethod
-    def pool_(mysql_config_pool):
+    @cache
+    def pool_(mysql_config_pool) -> MySQLConnectionPool:
         mysql_config_pool = {**mysql_config_pool, "autocommit": True}
 
         mysql_config_pool_key_min = {
@@ -35,7 +37,7 @@ class Mysql(Generic[T]):
             "autocommit",
         }
         assert mysql_config_pool.keys() >= mysql_config_pool_key_min, mysql_config_pool
-        pool: MySQLConnectionPool = mysql.connector.connect(**mysql_config_pool)
+        pool = MySQLConnectionPool(**mysql_config_pool)
         return pool
 
     def conn(self) -> MySQLConnection:
