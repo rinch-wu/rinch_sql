@@ -19,10 +19,10 @@ class Mysql(Generic[T]):
     def __init__(self, cls: Type[T], mysql_config_pool: dict[str]):
         self.cls = cls
         self.sql = Sql(cls)
-        self.pool: MySQLConnectionPool = self.pool(mysql_config_pool)
+        self.pool: MySQLConnectionPool = self.pool_(mysql_config_pool)
 
     @staticmethod
-    def pool(mysql_config_pool):
+    def pool_(mysql_config_pool):
         mysql_config_pool = {**mysql_config_pool, "autocommit": True}
 
         mysql_config_pool_key_min = {
