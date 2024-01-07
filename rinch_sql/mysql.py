@@ -8,6 +8,7 @@ from mysql.connector.pooling import MySQLConnectionPool
 from mysql.connector.connection import MySQLConnection
 
 from .sql import Sql
+from .db_config import DbConfig
 
 T = TypeVar("T")
 
@@ -17,28 +18,10 @@ class Mysql(Generic[T]):
     sql: Sql
     pool: MySQLConnectionPool
 
-    def __init__(self, cls: Type[T], mysql_config_pool: dict[str]):
+    def __init__(self, cls: Type[T], db_config: DbConfig):
         self.cls = cls
         self.sql = Sql(cls)
-        self.pool: MySQLConnectionPool = self.pool_(mysql_config_pool)
-
-    @staticmethod
-    @cache
-    def pool_(mysql_config_pool) -> MySQLConnectionPool:
-        mysql_config_pool = {**mysql_config_pool, "autocommit": True}
-
-        mysql_config_pool_key_min = {
-            "host",
-            "port",
-            "user",
-            "password",
-            "database",
-            "pool_size",
-            "autocommit",
-        }
-        assert mysql_config_pool.keys() >= mysql_config_pool_key_min, mysql_config_pool
-        pool = MySQLConnectionPool(**mysql_config_pool)
-        return pool
+        self.pool: MySQLConnectionPool = db_config.pool()
 
     def conn(self) -> MySQLConnection:
         total: int = 0
