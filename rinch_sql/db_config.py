@@ -11,7 +11,7 @@ class DbConfig:
     password: str
     pool_size: int = 1
     database: str = None
-    autocommit: bool = field(init=True)
+    autocommit: bool = field(init=False, default=True)
     # autocommit: bool = True  # 强制行为
 
     @cache
