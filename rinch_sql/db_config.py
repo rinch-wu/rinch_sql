@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from mysql.connector.pooling import MySQLConnectionPool
 from functools import cache
 
@@ -17,3 +17,6 @@ class DbConfig:
     @cache
     def pool(self) -> MySQLConnectionPool:
         return MySQLConnectionPool(**self.__dict__)
+
+    def replace(self, /, **changes):
+        return replace(self, changes)
