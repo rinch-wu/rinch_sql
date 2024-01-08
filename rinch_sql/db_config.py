@@ -11,8 +11,10 @@ class DbConfig:
     password: str
     pool_size: int = 1
     database: str = None
-    autocommit: bool = field(init=False, default=True)
-    # autocommit: bool = True  # 强制行为
+    autocommit: bool = True  # 强制行为
+
+    def __post_init__(self):
+        assert self.autocommit == True
 
     @cache
     def pool(self) -> MySQLConnectionPool:
