@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 
 def sql_debug(sql):
@@ -14,6 +15,8 @@ class SqlStatic:
         bool: "TINYINT(1)",
         int: "BIGINT",
         float: "DOUBLE",
+        datetime.datetime: "DATETIME(0)",
+        datetime.date: "DATE",
     }
 
     # 模板语句，需补足 表名table_name、字段定义dql_field
