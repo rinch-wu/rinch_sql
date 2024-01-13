@@ -16,11 +16,13 @@ class Table:
         return db
 
     def __hash__(self):
-        return hash(tuple([self.__dict__[i] for i in self.field_list_unique]))
+        return hash(self.__tuple__())
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            eq_list = [self.__dict__[i] == other.__dict__[i] for i in self.field_list_unique]
-            return all(eq_list)
+            return self.__tuple__() == other.__tuple__()
         else:
             return False
+
+    def __tuple__(self):
+        return tuple([self.__dict__[i] for i in self.field_list_unique])
