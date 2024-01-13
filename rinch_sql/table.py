@@ -14,3 +14,6 @@ class Table:
         db_config = db_config or cls.db_config
         db = Mysql(cls, db_config)
         return db
+
+    def __hash__(self):
+        return hash(tuple([self.__dict__[i] for i in self.field_list_unique]))
