@@ -24,5 +24,7 @@ class Table:
         else:
             return False
 
-    def __tuple__(self):
-        return tuple([self.__dict__[i] for i in self.field_list_unique])
+    def __iter__(self) -> iter:
+        for i in self.field_list_unique:
+            value = self.__dict__[i]
+            yield value
