@@ -1,5 +1,6 @@
+from table import User, mysql_user
+
 from rinch_sql import Sql, SqlStatic
-from table import mysql_user, User
 
 # select all
 user_list = mysql_user.select("")

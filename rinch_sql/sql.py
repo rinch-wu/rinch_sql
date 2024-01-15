@@ -1,5 +1,6 @@
 import re
 from dataclasses import is_dataclass
+
 from .sql_static import SqlStatic
 
 

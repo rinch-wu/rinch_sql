@@ -1,5 +1,5 @@
-import logging
 import datetime
+import logging
 
 
 def sql_debug(sql):

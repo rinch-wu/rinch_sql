@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field, replace
-from mysql.connector.pooling import MySQLConnectionPool
 from functools import cache
+
+from mysql.connector.pooling import MySQLConnectionPool
 
 
 @dataclass(frozen=True)

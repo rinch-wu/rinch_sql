@@ -2,7 +2,9 @@ import datetime
 from dataclasses import dataclass
 
 from rinch_sql.table import Table
+
 from ..config import MYSQL_SERVER_DATABASE
+
 
 @dataclass
 class User(Table):

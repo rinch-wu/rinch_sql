@@ -1,4 +1,5 @@
 from rinch_sql import Sql, SqlStatic
+
 from .table.user import User
 
 # select all

@@ -1,7 +1,7 @@
 from functools import cache
 
-from .mysql import Mysql
 from .db_config import DbConfig
+from .mysql import Mysql
 
 
 class Table:

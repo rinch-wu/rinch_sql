@@ -1,14 +1,13 @@
-from typing import Type, TypeVar, Generic
-
 import time
 from functools import cache
+from typing import Generic, Type, TypeVar
 
 import mysql.connector
-from mysql.connector.pooling import MySQLConnectionPool
 from mysql.connector.connection import MySQLConnection
+from mysql.connector.pooling import MySQLConnectionPool
 
-from .sql import Sql
 from .db_config import DbConfig
+from .sql import Sql
 
 T = TypeVar("T")
 
