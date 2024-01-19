@@ -5,7 +5,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter)
 [![Code style: isort](https://img.shields.io/badge/code%20style-isort-000000.svg)](https://marketplace.visualstudio.com/items?itemName=itemName=ms-python.isort)
 
-[![Imports: mysql-connector-python](https://img.shields.io/badge/%20imports-mysql-%231674b1?style=flat&labelColor=ef8336)](https://pypi.org/project/mysql-connector-python/)
+[![Imports: mysql-connector-python](https://img.shields.io/badge/%20imports-mysql--connector--python-%231674b1?style=flat&labelColor=ef8336)](https://pypi.org/project/mysql-connector-python/)
 [![Imports: dataclasses](https://img.shields.io/badge/%20imports-dataclasses-%231674b1?style=flat&labelColor=ef8336)](https://pypi.org/project/dataclasses/)
 
 
