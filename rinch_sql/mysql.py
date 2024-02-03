@@ -43,6 +43,17 @@ class Mysql(Generic[T]):
         obj_list = [self._values_2_obj(fields, i) for i in data_list]
         return obj_list
 
+    def select_by_uk(self, obj: T) -> list[T]:
+        uk_list = self.sql.field_list_unique
+        eq_list = [f"`{x}`=%s" for x in uk_list]
+        _where = " AND ".join(eq_list)
+        values = self._obj_2_values(obj, uk_list)
+
+        sql, fields = self.sql.select(_where)
+        data_list = self.execute(sql, values)
+        obj_list = [self._values_2_obj(fields, i) for i in data_list]
+        return obj_list
+
     def insert(self, obj_list: list[T]) -> None:
         sql, fields = self.sql.insert()
         values_list = [self._obj_2_values(obj, fields) for obj in obj_list]

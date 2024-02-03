@@ -20,7 +20,7 @@ class Table:
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return self.__tuple__() == other.__tuple__()
+            return tuple(self) == tuple(other)
         else:
             return False
 
