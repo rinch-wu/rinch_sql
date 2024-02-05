@@ -20,12 +20,12 @@ class Sql:
             self.field_list_common
         ), f"field_list_unique <= field_list_common, {self.field_list_unique=}, {self.field_list_common=}"
 
-        assert len(self.field_list_all) - len(SqlStatic.FIELD_LIST_PRE) == len(self.field_list_common), (
-            "SqlStatic.FIELD_LIST_PRE must be all in field_list_all, or all not",
-            SqlStatic.FIELD_LIST_PRE,
-            self.field_list_all,
-        )
-        self.with_id = len(self.field_list_common) != len(self.field_list_all)
+        # assert len(self.field_list_all) - len(SqlStatic.FIELD_LIST_PRE) == len(self.field_list_common), (
+        #     "SqlStatic.FIELD_LIST_PRE must be all in field_list_all, or all not",
+        #     SqlStatic.FIELD_LIST_PRE,
+        #     self.field_list_all,
+        # )
+        self.with_id = "id" in self.field_list_all
 
     @staticmethod
     def _is_subset_and_not_disjoint(set_sub: set[str], set2: set[str]):
