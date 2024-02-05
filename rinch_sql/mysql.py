@@ -19,8 +19,14 @@ class Mysql(Generic[T]):
 
     def __init__(self, cls: Type[T], db_config: DbConfig):
         self.cls = cls
-        self.sql = Sql(cls)
+        self.db_config = db_config
+
         self.pool: MySQLConnectionPool = db_config.pool()
+
+        if self.cls == None or self.cls.__name__ in ["Table", "SqlOnly"]:  # only exec sql
+            return
+        else:
+            self.sql = Sql(cls)
 
     def conn(self) -> MySQLConnection:
         total: int = 0
@@ -60,8 +66,6 @@ class Mysql(Generic[T]):
         self.executemany(sql, values_list)
 
     def insert_with_duplicate(self, obj_list: list[T], field_list: list[str] = None) -> None:
-        field_list = field_list or self.sql.field_list_common
-
         sql, fields = self.sql.insert_with_duplicate(field_list)
         values_list = [self._obj_2_values(obj, fields) for obj in obj_list]
         self.executemany(sql, values_list)

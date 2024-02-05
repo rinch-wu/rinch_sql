@@ -6,21 +6,33 @@ from .sql_static import SqlStatic
 
 class Sql:
     def __init__(self, cls: type):
-        assert is_dataclass(cls), "mute have annotion named @dataclasses.dataclass"
-
         self.cls: type = cls
+
+        assert is_dataclass(cls), "mute have annotion named @dataclasses.dataclass"
 
         self.table_name: str = self._get_table_name(cls)
         self.annotations: dict[str, type] = cls.__annotations__.copy()
         self.field_list_all: list[str] = self._get_field_list_all(cls)
-        self.field_list_common: list[str] = self._get_field_list_common(cls, SqlStatic.FIELD_LIST_PRE)
         self.field_list_unique: list[str] = cls.field_list_unique
+        self.field_list_common: list[str] = [x for x in self.field_list_all if x not in SqlStatic.FIELD_LIST_PRE]
 
-        assert SqlStatic.FIELD_LIST_PRE[0] in self.field_list_all, f"{SqlStatic.FIELD_LIST_PRE[0]} must in definition"
+        assert set(self.field_list_unique) <= set(
+            self.field_list_common
+        ), f"field_list_unique <= field_list_common, {self.field_list_unique=}, {self.field_list_common=}"
 
-        assert not (
-            field_list_else := set(self.field_list_unique) - set(self.field_list_common)
-        ), f"field_list_unique <= field_list_common, {field_list_else=}, {self.field_list_unique=}, {self.field_list_common=}"
+        assert len(self.field_list_all) - len(SqlStatic.FIELD_LIST_PRE) == len(self.field_list_common), (
+            "SqlStatic.FIELD_LIST_PRE must be all in field_list_all, or all not",
+            SqlStatic.FIELD_LIST_PRE,
+            self.field_list_all,
+        )
+        self.with_id = len(self.field_list_common) != len(self.field_list_all)
+
+    @staticmethod
+    def _is_subset_and_not_disjoint(set_sub: set[str], set2: set[str]):
+        set_sub = set(set_sub)
+        set2 = set(set2)
+
+        assert set_sub.issubset(set2) and not set_sub.isdisjoint(set2)
 
     @staticmethod
     def _get_table_name(cls: type) -> str:
@@ -37,10 +49,6 @@ class Sql:
     def _get_field_list_all(cls: type) -> list[str]:
         return list(cls.__annotations__.copy())
 
-    @staticmethod
-    def _get_field_list_common(cls: type, field_list_pre: list[str]) -> list[str]:
-        return [i for i in cls.__annotations__.copy() if i not in field_list_pre]
-
     def exist(self) -> str:
         return SqlStatic.exist(self.table_name)
 
@@ -55,6 +63,7 @@ class Sql:
         return SqlStatic.create(
             self.table_name,
             self.annotations,
+            self.with_id,
             self.field_list_common,
             self.field_list_unique,
         )
@@ -65,7 +74,7 @@ class Sql:
     def insert(self) -> str:
         return SqlStatic.insert(self.table_name, self.field_list_common)
 
-    def insert_with_duplicate(self, field_list: list[str]) -> str:
+    def insert_with_duplicate(self, field_list: list[str] = None) -> str:
         field_list = field_list or self.field_list_common
         return SqlStatic.insert_with_duplicate(self.table_name, field_list)
 

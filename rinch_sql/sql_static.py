@@ -20,15 +20,19 @@ class SqlStatic:
     }
 
     # 模板语句，需补足 表名table_name、字段定义dql_field
-    CREATE_TABLE_TEMPLATE = """CREATE TABLE `{table_name}` (
-    `id` bigint NOT NULL AUTO_INCREMENT,
-    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
-{field_list_common_create_str},
-    PRIMARY KEY (`id`)
+    CREATE_TABLE_TEMPLATE = """
+CREATE TABLE `{table_name}` (
+    {CREATE_TABLE_TEMPLATE_ID}
+    {field_list_common_create_str}
     {create_unique_str}
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-"""
+""".strip()
+
+    CREATE_TABLE_TEMPLATE_ID = """
+    `id` bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+    `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
+""".strip()
 
     @staticmethod
     def exist(table_name: str) -> str:
@@ -54,21 +58,22 @@ class SqlStatic:
     def create(
         table_name: str,
         name_2_type: dict[str, type],
+        with_id: str,
         field_list_common: list[str],
         field_list_unique: list[str],
     ) -> str:
-        assert len(field_list_common) > 0
+        CREATE_TABLE_TEMPLATE_ID = SqlStatic.CREATE_TABLE_TEMPLATE_ID if with_id else ""
+
         field_list_common_create_str = SqlStatic._field_list_common_create_str(
             name_2_type, field_list_common, field_list_unique
         )
-        create_unique_str = (
-            f",UNIQUE KEY `uk_only` ({SqlStatic.get_field_list_str(field_list_unique)})"
-            if field_list_unique and len(field_list_unique) > 0
-            else ""
-        )
+
+        assert field_list_unique != None and len(field_list_unique) > 0, f"{field_list_unique=}"
+        create_unique_str = f"UNIQUE KEY `uk_only` ({SqlStatic.get_field_list_str(field_list_unique)})"
 
         sql = SqlStatic.CREATE_TABLE_TEMPLATE.format(
             table_name=table_name,
+            CREATE_TABLE_TEMPLATE_ID=CREATE_TABLE_TEMPLATE_ID,
             field_list_common_create_str=field_list_common_create_str,
             create_unique_str=create_unique_str,
         )
@@ -105,7 +110,7 @@ class SqlStatic:
     def insert(table_name: str, field_list_common: list[str]) -> tuple[str, list[str]]:
         field_list_common_str = SqlStatic.get_field_list_str(field_list_common)
         values_str = ",".join(["%s"] * len(field_list_common))
-        sql = f"INSERT INTO `{table_name}`({field_list_common_str}) VALUES({values_str})  as new_data"
+        sql = f"INSERT INTO `{table_name}`({field_list_common_str}) VALUES({values_str}) as new_data"
         sql_debug(sql)
         return sql, field_list_common
 
@@ -125,12 +130,15 @@ class SqlStatic:
         field_list_common: list[str],
         field_list_unique: list[str],
     ) -> str:
+        assert field_list_common != None and len(field_list_common) > 0, f"{field_list_common=}"
+
         lines = map(
             lambda i: f"    `{i}` {SqlStatic.get_sql_type(i, name_2_type[i])}"
-            + (" NOT NULL" if i in field_list_unique else ""),  # unique key必须是not null
+            + (" NOT NULL" if i in field_list_unique else "")  # unique key必须是not null
+            + ",\n",
             field_list_common,
         )
-        field_list_common_create_str = ",\n".join(lines)
+        field_list_common_create_str = "".join(lines).strip()
         return field_list_common_create_str
 
     @staticmethod
