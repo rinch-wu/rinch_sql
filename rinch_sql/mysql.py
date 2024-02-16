@@ -58,6 +58,8 @@ class Mysql(Generic[T]):
         sql, fields = self.sql.select(_where)
         data_list = self.execute(sql, values)
         obj_list = [self._values_2_obj(fields, i) for i in data_list]
+        assert len(obj_list) <= 1
+        obj = obj_list[0] if obj_list else None
         return obj_list
 
     def insert(self, obj_list: list[T]) -> None:
