@@ -6,3 +6,4 @@ from .mysql import Mysql
 from .sql import Sql
 from .sql_static import SqlStatic
 from .table import Table
+from .use_var import *
