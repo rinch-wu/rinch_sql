@@ -18,7 +18,7 @@ class Table:
     def __hash__(self):
         return hash(self.__tuple__())
 
-    def __eq__(self, other):
+    def __eq2__(self, other):
         if isinstance(other, self.__class__):
             return tuple(self) == tuple(other)
         else:
