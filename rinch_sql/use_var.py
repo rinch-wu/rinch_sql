@@ -7,15 +7,10 @@ def dataclass(cls):
     from functools import wraps
 
     @wraps(cls)
-    @dataclass_
-    class DecoratedClass(cls):
-        def __hash__(self):
-            return hash(tuple(self))
+    def decorator(original_class):
+        cls_dataclass_ = dataclass_(original_class)
+        cls_dataclass_.__eq__ = cls_dataclass_.__eq2__
+        cls_dataclass_.__hash__ = cls_dataclass_.__hash2__
+        return cls_dataclass_
 
-        def __eq__(self, other):
-            if isinstance(other, self.__class__):
-                return tuple(self) == tuple(other)
-            else:
-                return False
-
-    return DecoratedClass
+    return decorator(cls)
