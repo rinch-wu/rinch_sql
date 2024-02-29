@@ -6,11 +6,27 @@ def dataclass(cls):
     from dataclasses import dataclass as dataclass_
     from functools import wraps
 
-    @wraps(cls)
+    # 装饰器函数
     def decorator(original_class):
-        cls_dataclass_ = dataclass_(original_class)
-        cls_dataclass_.__eq__ = cls_dataclass_.__eq2__
-        cls_dataclass_.__hash__ = cls_dataclass_.__hash2__
-        return cls_dataclass_
+        # 保留原始签名
+        @wraps(original_class)
+        @dataclass_(eq=False)
+        class DecoratedClass(original_class):
+            def __hash2__(self):
+                return hash(tuple(self))
+
+            def __eq2__(self, other):
+                if isinstance(other, self.__class__):
+                    return tuple(self) == tuple(other)
+                else:
+                    return False
+
+            def __iter__(self) -> iter:
+                for i in self.field_list_unique:
+                    value = self.__dict__[i]
+                    yield value
+
+
+        return DecoratedClass
 
     return decorator(cls)
