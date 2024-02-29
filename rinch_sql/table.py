@@ -16,7 +16,7 @@ class Table:
         return db
 
     def __hash2__(self):
-        return hash(self.__tuple__())
+        return hash(tuple(self))
 
     def __eq2__(self, other):
         if isinstance(other, self.__class__):
