@@ -15,7 +15,7 @@ class Table:
         db = Mysql(cls, db_config)
         return db
 
-    def __hash__(self):
+    def __hash2__(self):
         return hash(self.__tuple__())
 
     def __eq2__(self, other):
