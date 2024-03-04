@@ -1,2 +1,4 @@
-from dataclasses import dataclass, replace
+from dataclasses import replace
 from datetime import date, datetime
+
+from .dataclasses import dataclass
