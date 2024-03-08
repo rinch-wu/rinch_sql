@@ -17,6 +17,7 @@ class SqlStatic:
         float: "DOUBLE",
         datetime.datetime: "DATETIME(0)",
         datetime.date: "DATE",
+        bytes: "LONGBLOB",
     }
 
     # 模板语句，需补足 表名table_name、字段定义dql_field
