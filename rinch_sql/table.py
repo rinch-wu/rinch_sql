@@ -28,3 +28,22 @@ class Table:
         for i in self.field_list_unique:
             value = self.__dict__[i]
             yield value
+
+    @classmethod
+    def create(cls, is_exec: bool = False) -> list[str]:
+        subclass: list[type[Table]] = cls.subclass()
+        sql_list = [x.db().sql.create() for x in subclass]
+        if is_exec:
+            [x.db().create() for x in subclass]
+
+        return sql_list
+
+    @classmethod
+    def subclass(cls) -> list[type]:  # list[type[Table]]
+        res = []
+        subclass = cls.__subclasses__()
+        res += subclass
+        for x in subclass:
+            res_now = x.subclass()
+            res += res_now
+        return res
