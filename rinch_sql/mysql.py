@@ -43,8 +43,19 @@ class Mysql(Generic[T]):
         sql = self.sql.create()
         self.execute(sql)
 
+    def select_by_sql(self, sql: str, values=None) -> list[T]:
+        with self.conn() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, values)
+                data_list = cursor.fetchall()
+                columns = cursor.description
+        obj_list = [self._values_2_obj(columns, i) for i in data_list]
+        return obj_list
+
     def select(self, _where: str) -> list[T]:
         sql, fields = self.sql.select(_where)
+        # return self.select_by_sql(sql)
+
         data_list = self.execute(sql)
         obj_list = [self._values_2_obj(fields, i) for i in data_list]
         return obj_list
@@ -56,6 +67,8 @@ class Mysql(Generic[T]):
         values = self._obj_2_values(obj, uk_list)
 
         sql, fields = self.sql.select(_where)
+        # return self.select_by_sql(sql)
+
         data_list = self.execute(sql, values)
         obj_list = [self._values_2_obj(fields, i) for i in data_list]
         assert len(obj_list) <= 1
