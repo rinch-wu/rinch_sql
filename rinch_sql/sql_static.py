@@ -116,6 +116,13 @@ CREATE TABLE `{table_name}` (
         return sql, field_list_common
 
     @staticmethod
+    def delete(table_name: str, field_list_unique: list[str]) -> tuple[str, list[str]]:
+        where = " AND ".join([f"`{x}`=%s" for x in field_list_unique])
+        sql = f"DELETE FROM `{table_name}` WHERE {where} LIMIT 1"
+        sql_debug(sql)
+        return sql, field_list_unique
+
+    @staticmethod
     def _duplicate(field_list_common: list[str]) -> str:
         field_list_common_str = ",".join(map(lambda i: f"`{i}`=new_data.`{i}`", field_list_common))
         sql_duplicate = f"ON DUPLICATE KEY UPDATE {field_list_common_str}"

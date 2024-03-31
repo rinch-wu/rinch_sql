@@ -93,6 +93,11 @@ class Mysql(Generic[T]):
     def update_one_key_with_value(self, obj: T, key: str) -> None:
         self.update_many(obj, [key])
 
+    def delete(self, obj: T) -> None:
+        sql, fields = self.sql.delete()
+        values = self._obj_2_values(obj, fields)
+        self.execute(sql, values)
+
     # def check_field_str(self, data_dict: dict[str]) -> None:
     #     if not hasattr(self, "table_desc"):
     #         self.table_desc: dict[str, dict[str, int]] = {}

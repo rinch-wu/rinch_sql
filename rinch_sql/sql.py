@@ -68,15 +68,18 @@ class Sql:
             self.field_list_unique,
         )
 
-    def select(self, _where: str) -> str:
+    def select(self, _where: str) -> tuple[str, list[str]]:
         return SqlStatic.select(self.table_name, self.field_list_all, _where)
 
-    def insert(self) -> str:
+    def insert(self) -> tuple[str, list[str]]:
         return SqlStatic.insert(self.table_name, self.field_list_common)
 
-    def insert_with_duplicate(self, field_list: list[str] = None) -> str:
+    def insert_with_duplicate(self, field_list: list[str] = None) -> tuple[str, list[str]]:
         field_list = field_list or self.field_list_common
         return SqlStatic.insert_with_duplicate(self.table_name, field_list)
 
-    def update(self, field_list: list[str]) -> str:
+    def update(self, field_list: list[str]) -> tuple[str, list[str]]:
         return SqlStatic.update(self.table_name, field_list)
+
+    def delete(self) -> tuple[str, list[str]]:
+        return SqlStatic.delete(self.table_name, self.field_list_unique)
