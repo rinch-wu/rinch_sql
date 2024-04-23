@@ -32,9 +32,9 @@ dependencies = ["mysql-connector-python"]
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/rinch-wu/rinch_sql"
-Documentation = "https://github.com/rinch-wu/rinch_sql"
-Repository = "https://github.com/rinch-wu/rinch_sql"
+Homepage = "https://github.com/rinch-wu/rinch_sql.git"
+Documentation = "https://github.com/rinch-wu/rinch_sql.git"
+Repository = "https://github.com/rinch-wu/rinch_sql.git"
 
 [tool.black]
 line-length = 120
